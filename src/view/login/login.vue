@@ -8,7 +8,7 @@
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <login-form @on-success-valid="handleSubmit"></login-form>
-          <p class="login-tip">输入任意用户名和密码即可</p>
+          <p class="login-tip">KIWI提供技术支持</p>
         </div>
       </Card>
     </div>
@@ -17,6 +17,8 @@
 
 <script>
 import LoginForm from '_c/login-form'
+import * as util from '@/libs/util'
+import md5 from 'js-md5'
 import { mapActions } from 'vuex'
 export default {
   components: {
@@ -27,14 +29,21 @@ export default {
       'handleLogin',
       'getUserInfo'
     ]),
-    handleSubmit ({ userName, password }) {
-      this.handleLogin({ userName, password }).then(res => {
-        this.getUserInfo().then(res => {
-          this.$router.push({
-            name: this.$config.homeName
-          })
-        })
-      })
+    async handleSubmit ({ userName, password }) {
+      let r = await util.requestFrom('api/user/dologin?returnUrl=http://wwww.baidu.com', {data: {email: userName, passwd: md5(password)}})
+      console.log(r)
+      let returnUrl = this.$route.query.returnUrl
+      if (!returnUrl) {
+        return this.$Message.error('returnUrl不能为空')
+      }
+      window.location.href = returnUrl
+      // this.handleLogin({ userName, password }).then(res => {
+      //   this.getUserInfo().then(res => {
+      //     this.$router.push({
+      //       name: this.$config.homeName
+      //     })
+      //   })
+      // })
     }
   }
 }

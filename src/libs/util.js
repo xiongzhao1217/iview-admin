@@ -2,6 +2,9 @@ import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
+import axios from 'axios'
+import * as qs from 'qs'
+import _ from 'underscore'
 
 export const TOKEN_KEY = 'token'
 
@@ -341,4 +344,121 @@ export const localSave = (key, value) => {
 
 export const localRead = (key) => {
   return localStorage.getItem(key) || ''
+}
+
+/**
+ * 移除对象中的null属性
+ * @author xiongzhao1
+ * @param {*} obj
+ */
+export const filterNullField = (obj) => {
+  for (let field in obj) {
+    if (!obj[field] && obj[field] !== 0) {
+      delete obj[field]
+    }
+  }
+  return obj
+}
+
+/**
+ * 发送请求，默认json方式提交请求
+ * 当opt中包含data属性时，按照post方式提交，否则按照get方式提交
+ * @param url
+ * @param opt
+ * @returns {Promise<T | never>}
+ */
+export const request = (url, opt) => {
+  // console.log('请求：' + url)
+  let error = window.app.$Message && window.app.$Message.error.bind(window.app.$Message) || alert
+  opt = opt || {}
+  opt.paramsSerializer = params => qs.stringify(params)
+  if (opt && opt.data) {
+    opt.method = opt.method || 'POST'
+  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   opt.baseURL = envConfig.backend
+  // } else {
+  //   opt.baseURL = envConfig.domain
+  //   url = 'api/' + url
+  // }
+  if (opt && opt.method === 'POST') {
+    if (opt.type === 'form') {
+      opt.headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    opt.transformRequest = [function (data) {
+      // Do whatever you want to transform the data
+      if (data != null) {
+        Object.keys(data).forEach((key) => {
+          let val = data[key]
+          if (val instanceof Date) {
+            data[key] = val.format()
+          }
+        })
+      }
+      let postData = qs.stringify(data)
+      return postData
+    }]
+  }
+  return axios(url, opt).then(r => {
+    let data = r.data
+    if (data.code && !opt.silent) {
+      error(data.message)
+      return Promise.reject(data)
+    }
+    if (data.code === 401) {
+      window.location.href = `${globalConfig.loginUrl}?ReturnUrl=${encodeURIComponent(window.location.href)}`
+    }
+    return data
+  }, err => {
+    let serr = typeof err === 'string' ? err : JSON.stringify(err)
+    if (serr.indexOf('ECONNREFUSED') >= 0) {
+      error('网络错误，请确认服务器是否正常提供服务')
+    } else if (serr.indexOf('ServiceUnavailableError') >= 0) {
+      error('服务不可用')
+    } else {
+      alertOnce(err.response && err.response.data)
+      error('服务器错误')
+      console.error('error fetching:', url, _.omit(opt, 'paramsSerializer'))
+      console.error('error:', err.response.data)
+    }
+    return Promise.reject(err)
+  })
+}
+
+/**
+ * 表单方式提交请求
+ * 当opt中包含data属性时，按照post方式提交，否则按照get方式提交
+ * @param url
+ * @param opt
+ */
+export const requestFrom = (url, opt) => {
+  opt.type = 'form'
+  return request(url, opt)
+}
+
+let alerted = false
+export const alertOnce = (message) => {
+  if (alerted) return
+  alerted = true
+  alert(typeof message === 'string' ? message : JSON.stringify(message))
+}
+
+export const validateForm = (form) => {
+  return new Promise(resolve => {
+    form.validate(valid => resolve(valid))
+  })
+}
+
+export const updateLoading = (promise, update) => {
+  if (!promise.then) return
+  update(true)
+  promise.then(r => {
+    update(false)
+    return r
+  }, err => {
+    update(false)
+    return Promise.reject(err)
+  })
 }
