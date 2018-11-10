@@ -1,4 +1,5 @@
 const path = require('path')
+let { backend } = require('./config')
 
 const resolve = dir => {
   return path.join(__dirname, dir)
@@ -41,7 +42,7 @@ module.exports = {
     stats: { chunks: false },
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/',
+        target: backend,
         changeOrigin: true,
         secure: false,
         pathRewrite: {

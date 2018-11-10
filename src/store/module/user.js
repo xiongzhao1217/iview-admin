@@ -1,5 +1,5 @@
 import { login, logout, getUserInfo } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, getToken, request } from '@/libs/util'
 
 export default {
   state: {
@@ -68,12 +68,12 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          getUserInfo(state.token).then(res => {
+          getUserInfo().then(res => {
             const data = res.data
-            commit('setAvator', data.avator)
-            commit('setUserName', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
+            commit('setAvator', data.avatarUrl)
+            commit('setUserName', data.nickName)
+            commit('setUserId', data.id)
+            commit('setAccess', data.access || [])
             commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {

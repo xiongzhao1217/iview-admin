@@ -13,6 +13,7 @@
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
+import { loginUrl } from '../../../../../config'
 export default {
   name: 'User',
   props: {
@@ -29,9 +30,7 @@ export default {
       switch (name) {
         case 'logout':
           this.handleLogOut().then(() => {
-            this.$router.push({
-              name: 'login'
-            })
+            window.location.href = `${loginUrl}?returnUrl=${encodeURIComponent(window.location.href)}`
           })
           break
       }

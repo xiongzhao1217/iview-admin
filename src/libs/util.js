@@ -5,6 +5,7 @@ import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 import axios from 'axios'
 import * as qs from 'qs'
 import _ from 'underscore'
+import envConfig from '../../config'
 
 export const TOKEN_KEY = 'token'
 
@@ -367,20 +368,13 @@ export const filterNullField = (obj) => {
  * @param opt
  * @returns {Promise<T | never>}
  */
-export const request = (url, opt) => {
-  // console.log('请求：' + url)
+export const requestJson = (url, opt) => {
   let error = window.app.$Message && window.app.$Message.error.bind(window.app.$Message) || alert
   opt = opt || {}
   opt.paramsSerializer = params => qs.stringify(params)
   if (opt && opt.data) {
     opt.method = opt.method || 'POST'
   }
-  // if (process.env.NODE_ENV === 'production') {
-  //   opt.baseURL = envConfig.backend
-  // } else {
-  //   opt.baseURL = envConfig.domain
-  //   url = 'api/' + url
-  // }
   if (opt && opt.method === 'POST') {
     if (opt.type === 'form') {
       opt.headers = {
@@ -407,8 +401,8 @@ export const request = (url, opt) => {
       error(data.message)
       return Promise.reject(data)
     }
-    if (data.code === 401) {
-      window.location.href = `${globalConfig.loginUrl}?ReturnUrl=${encodeURIComponent(window.location.href)}`
+    if (data.code === 301 || data.code === 401) {
+      window.location.href = `${envConfig.loginUrl}?ReturnUrl=${encodeURIComponent(window.location.href)}`
     }
     return data
   }, err => {
@@ -433,9 +427,9 @@ export const request = (url, opt) => {
  * @param url
  * @param opt
  */
-export const requestFrom = (url, opt) => {
-  opt.type = 'form'
-  return request(url, opt)
+export const request = (url, opt) => {
+  if (opt) opt.type = 'form'
+  return requestJson(url, opt)
 }
 
 let alerted = false
