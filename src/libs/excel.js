@@ -62,9 +62,9 @@ export const export_table_to_excel= (id, filename) => {
     XLSX.writeFile(wb, filename);
 
     /* the second way */
-    // const table = document.getElementById(id);
+    // const _comps = document.getElementById(id);
     // const wb = XLSX.utils.book_new();
-    // const ws = XLSX.utils.table_to_sheet(table);
+    // const ws = XLSX.utils.table_to_sheet(_comps);
     // XLSX.utils.book_append_sheet(wb, ws, filename);
     // XLSX.writeFile(wb, filename);
 }

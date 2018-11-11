@@ -12,7 +12,8 @@ module.exports = {
     'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }],
     'no-undef': 'off',
     'no-mixed-operators': [0],
-    'no-unused-vars': [0]
+    'no-unused-vars': [0],
+    'no-return-assign': [0]
   },
   parserOptions: {
     parser: 'babel-eslint'
