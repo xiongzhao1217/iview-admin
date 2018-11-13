@@ -7,27 +7,32 @@
         <Form :model="form" label-position="right" :label-width="60">
           <Row type="flex" justify="space-between">
             <Col span="5" offset="1">
-              <FormItem label="应用简称" prop="appNameEn">
-                <Input v-model="form.appNameEn" clearable></Input>
+              <FormItem label="手机号" prop="appNameEn">
+                <Input v-model="form.telephone" clearable></Input>
               </FormItem>
             </Col>
             <Col span="5" offset="1">
-              <FormItem label="应用名称">
-                <Input v-model="form.appName" clearable></Input>
+              <FormItem label="邮箱">
+                <Input v-model="form.email" clearable></Input>
               </FormItem>
             </Col>
             <Col span="5" offset="1">
-              <FormItem label="AppID">
-                <Input v-model="form.appId" clearable></Input>
+              <FormItem label="昵称">
+                <Input v-model="form.nickName" clearable></Input>
               </FormItem>
             </Col>
             <Col span="5" offset="1">
-              <FormItem label="应用状态" prop="status">
-                <AutoSelect v-model="form.status" :mapper="consts.appStatus" number clearable/>
+              <FormItem label="性别" prop="sex">
+                <AutoSelect v-model="form.sex" :mapper="consts.sexMapper" number clearable/>
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row type="flex" justify="space-between">
+            <Col span="5" offset="1">
+              <FormItem label="状态" prop="sex">
+                <AutoSelect v-model="form.status" :mapper="consts.userStatusMapper" number clearable/>
+              </FormItem>
+            </Col>
             <Col offset="1">
               <Button @click="reset">重置</Button>
               <Button type="primary" @click="queryCondition" style="margin-left: 15px;">查询</Button>
@@ -39,7 +44,7 @@
     <br/>
     <card dis-hover>
       <p slot="title">
-        应用列表
+        用户列表
       </p>
       <Button slot="extra" type="primary" size="small" @click="clickEdit">新增</Button>
       <AutoTable ref='table' v-bind='table' :params="form"></AutoTable>
@@ -49,8 +54,9 @@
 
 <script>
 import {showModal} from '_c/_comps/modals'
-import AppsEditModal from './appsEditModal'
+import UserEditModal from './userEditModal'
 import * as consts from './index'
+import * as util from '@/libs/util'
 
 export default {
   data () {
@@ -58,7 +64,7 @@ export default {
       consts,
       form: {},
       table: {
-        uri: '/api/apps/list',
+        uri: '/api/user/list',
         params: this.form,
         defaultWidth: 150,
         columns: [
@@ -69,29 +75,21 @@ export default {
             width: 60
           },
           {
-            title: '应用简称',
-            key: 'appNameEn',
-            fixed: 'left',
-            width: 100
+            title: '昵称',
+            key: 'nickName',
+            width: 150
           },
           {
-            title: '应用名称',
-            key: 'appName'
+            title: '手机号',
+            key: 'telephone'
           }, {
-            title: 'AppID',
-            key: 'appId'
+            title: '邮箱',
+            key: 'email',
+            width: 200
           }, {
-            title: 'APP密钥',
-            key: 'appSecret'
-          }, {
-            title: '应用状态',
-            mapper: consts.appStatus,
-            type: 'tag',
-            key: 'status'
-          }, {
-            title: '应用负责人手机号',
-            key: 'appSupportTelephone',
-            width: 160
+            title: '性别',
+            mapper: consts.sexMapper,
+            key: 'sex'
           }, {
             title: '创建时间',
             key: 'createTime',
@@ -100,6 +98,17 @@ export default {
             title: '更新时间',
             key: 'updateTime',
             sortable: 'custom'
+          }, {
+            title: '用户状态',
+            mapper: consts.userStatusMapper,
+            key: 'status',
+            fixed: 'right',
+            renderComp: {
+              type: 'switch',
+              slotTitle: ['有效', '无效'],
+              size: 'large',
+              click: this.clickSwith
+            }
           }, {
             title: '操作',
             fixed: 'right',
@@ -119,10 +128,13 @@ export default {
   },
   methods: {
     async clickEdit (row = {}) {
-      let r = await showModal(AppsEditModal, {data: row}, {title: row.id ? '编辑应用' : '新增应用', width: 30})
+      let r = await showModal(UserEditModal, {data: row}, {title: row.id ? '编辑用户' : '新增用户', width: 25})
       if (r) {
         await this.$refs.table.reload()
       }
+    },
+    async clickSwith (row = {}, isOpen) {
+      await util.request('/api/user/update', {data: {id: row.id, status: isOpen}})
     },
     async queryCondition () {
       await this.$refs.table.reload()

@@ -19,25 +19,6 @@ export default [
       title: '用户管理'
     },
     component: Main,
-    children: [
-      {
-        path: 'userManager',
-        name: 'userManager',
-        meta: {
-          icon: 'md-add',
-          title: '用户管理'
-        },
-        component: () => import('@/view/excel/upload-excel.vue')
-      },
-      {
-        path: 'optLog',
-        name: 'opt_log',
-        meta: {
-          icon: 'md-download',
-          title: '操作日志'
-        },
-        component: () => import('@/view/excel/export-excel.vue')
-      }
-    ]
+    children: require('./user').default
   }
 ]

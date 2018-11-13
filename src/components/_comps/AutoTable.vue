@@ -31,7 +31,8 @@ export default {
     columns2 () {
       return this.columns.map(c => _.extend({align: 'center'}, c, { // 搜索功能需要改变c，请注意
         render: c.renderText && ((h, ctx) => h('span', c.renderText(ctx.row))) ||
-          c.mapper && ((h, ctx) => c.type === 'tag' && h('Tag', {props: {color: ctx.row[c.key] !== 0 ? 'cyan' : 'default'}}, c.mapper[ctx.row[c.key]]) || h('span', c.mapper[ctx.row[c.key]])) ||
+          c.renderComp && this.renderComp(c.renderComp, c) ||
+          c.mapper && ((h, ctx) => c.mapper[ctx.row[c.key]] != null && h('Tag', {props: {color: ctx.row[c.key] !== 0 ? 'cyan' : 'default'}}, c.mapper[ctx.row[c.key]]) || h('span', c.mapper[ctx.row[c.key]])) ||
           c.renderButtons && ((h, ctx) => h(AutoTableButtons, {props: {buttons: c.renderButtons(ctx.row), row: ctx.row}})) ||
           c.render,
         width: c.width || this.defaultWidth,
@@ -117,6 +118,18 @@ export default {
         this.count = r.data.total
         return r
       })
+    },
+    renderComp (compProps, c) {
+      if (compProps && compProps.type === 'switch') {
+        return (h, ctx) => h('AutoSwitch', {
+          props: {...compProps,
+            value: ctx.row[c.key],
+            row: ctx.row,
+            change: compProps && compProps.click,
+            valueBind: v => ctx.row[c.key] = v
+          }
+        })
+      }
     }
   }
 }
