@@ -5,7 +5,7 @@ import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 import axios from 'axios'
 import * as qs from 'qs'
 import _ from 'underscore'
-import envConfig from '../../config'
+let envConfig = require('../../config')
 
 export const TOKEN_KEY = 'token'
 

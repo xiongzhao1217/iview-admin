@@ -5,7 +5,7 @@ import store from '@/store'
 import iView from 'iview'
 import { setToken, getToken, canTurnTo } from '@/libs/util'
 import config from '@/config'
-import { loginUrl } from '../../config'
+let { loginUrl } = require('../../config')
 const { homeName } = config
 
 Vue.use(Router)
