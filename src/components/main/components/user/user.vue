@@ -13,7 +13,7 @@
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
-import { loginUrl } from '../../../../../config'
+let { loginUrl } = require('../../../../../config')
 export default {
   name: 'User',
   props: {
