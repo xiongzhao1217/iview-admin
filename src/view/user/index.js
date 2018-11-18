@@ -13,7 +13,7 @@ export default [{
     icon: 'md-download',
     title: '操作日志'
   },
-  component: () => import('@/view/excel/export-excel.vue')
+  component: () => import('@/view/user/users.vue')
 }]
 
 // 应用状态
