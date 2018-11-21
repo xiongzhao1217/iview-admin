@@ -20,5 +20,15 @@ export default [
     },
     component: Main,
     children: require('./user').default
+  },
+  {
+    path: '/access',
+    name: 'access',
+    meta: {
+      icon: 'ios-stats',
+      title: '权限控制'
+    },
+    component: Main,
+    children: require('./access').default
   }
 ]

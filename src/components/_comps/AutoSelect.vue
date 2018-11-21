@@ -22,7 +22,7 @@ export default {
   props: {
     placeholder: String,
     value: String | Number,
-    mapper: Object,
+    mapper: Object | Array,
     filterable: Boolean,
     disabled: Boolean,
     number: Boolean,
@@ -36,13 +36,13 @@ export default {
   watch: {
     'mapper': function (n, o) {
       console.log('mapper', this.mapper)
-      this.options = _.pairs(this.mapper)
+      this.options = this.mapper instanceof Array && this.mapper || _.pairs(this.mapper)
     }
   },
   computed: {
     options: {
       get: function () {
-        return _.pairs(this.mapper)
+        return this.mapper instanceof Array && this.mapper || _.pairs(this.mapper)
       },
       set: function (o) {}
     }

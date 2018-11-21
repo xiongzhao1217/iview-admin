@@ -24,7 +24,6 @@ export default {
   props: ['data'],
   data () {
     let form = JSON.parse(JSON.stringify(this.data))
-    form = {uid: '', email: '', sex: '', mobile: '', phone_num: '', birthday: '', nick_name: '', last_name: '', first_name: '', ...form}
     return {
       consts,
       form,

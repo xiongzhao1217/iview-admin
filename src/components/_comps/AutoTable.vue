@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 7px;">
     <Spin size="small" fix v-if="loading"></Spin>
-    <Table size="small" v-if="!hideTable" ref="table" @on-sort-change="sortChanged" :columns="columns2" :data="rows" stripe />
+    <Table size="small" v-if="!hideTable" ref="table" @on-sort-change="sortChanged" :columns="columns2" :data="rows"/>
     <Row type="flex" justify="end" class="mgtb20">
       <Page :total="count" :pageSize="pageSize" :current="current" @on-page-size-change="pageSizeChanged" @on-change="pageChanged" show-total show-elevator show-sizer></Page>
     </Row>
@@ -14,7 +14,7 @@ import AutoTableButtons from './AutoTableButtons'
 import _ from 'underscore'
 
 export default {
-  props: ['uri', 'params', 'columns', 'defaultWidth'],
+  props: ['uri', 'params', 'columns', 'defaultWidth', 'unAuto'],
   data () {
     return {
       search: {},
@@ -70,8 +70,10 @@ export default {
         this.$emit(event, ...args)
       })
     }
-    await setTimeout(300)
-    await this.reload()
+    // await setTimeout(300)
+    if (!this.unAuto) {
+      await this.reload()
+    }
   },
   methods: {
     async reset () { // 重置表格的状态
