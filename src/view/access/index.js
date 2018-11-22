@@ -15,3 +15,6 @@ export default [{
   },
   component: () => import('@/view/access/menus.vue')
 }]
+
+// 权限类型
+export let accessTypeMapper = {1: '菜单', 2: '按钮'}

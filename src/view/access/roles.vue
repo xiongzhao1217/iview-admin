@@ -23,13 +23,11 @@
 <script>
 import {showModal} from '_c/_comps/modals'
 import RoleEditModal from './roleEditModal'
-import * as consts from './index'
 import * as util from '@/libs/util'
 
 export default {
   data () {
     return {
-      consts,
       params: {},
       appMapper: [],
       table: {

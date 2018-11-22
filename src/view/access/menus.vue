@@ -1,163 +1,107 @@
 <template>
   <div>
-    <!--<Row class='mgtb20'><Button type='primary' @click='clickEdit()'>增加联系人</Button></Row>-->
-    <Row>
-      <card dis-hover>
-        <h4>内容筛选</h4><br>
-        <Form :model="form" label-position="right" :label-width="60">
-          <Row type="flex" justify="space-between">
-            <Col span="5" offset="1">
-              <FormItem label="手机号" prop="appNameEn">
-                <Input v-model="form.telephone" clearable></Input>
-              </FormItem>
-            </Col>
-            <Col span="5" offset="1">
-              <FormItem label="邮箱">
-                <Input v-model="form.email" clearable></Input>
-              </FormItem>
-            </Col>
-            <Col span="5" offset="1">
-              <FormItem label="昵称">
-                <Input v-model="form.nickName" clearable></Input>
-              </FormItem>
-            </Col>
-            <Col span="5" offset="1">
-              <FormItem label="性别" prop="sex">
-                <AutoSelect v-model="form.sex" :mapper="consts.sexMapper" number clearable/>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row type="flex" justify="space-between">
-            <Col span="5" offset="1">
-              <FormItem label="状态" prop="sex">
-                <AutoSelect v-model="form.status" :mapper="consts.userStatusMapper" number clearable/>
-              </FormItem>
-            </Col>
-            <Col offset="1">
-              <Button @click="reset">重置</Button>
-              <Button type="primary" @click="queryCondition" style="margin-left: 15px;">查询</Button>
-            </Col>
-          </Row>
-        </Form>
-      </card>
+    <Row type="flex" justify="space-between">
+      <Col>
+        所属应用:
+        <AutoSelect v-model="appsId" :mapper="appMapper" @on-change="appChange" number clearable style="width: 243px"/>
+      </Col>
     </Row>
-    <br/>
-    <card dis-hover>
+    <br>
+    <card dis-hover style="width:300px; height: 600px">
       <p slot="title">
-        用户列表
+        菜单管理
       </p>
-      <Button slot="extra" type="primary" size="small" @click="clickEdit">新增</Button>
-      <AutoTable ref='table' v-bind='table' :params="form"></AutoTable>
+      <Ztree
+        ref="ztree"
+        :data="treeData"
+        :setting="setting"
+        :clickAddBtn="clickAddNode"
+        :clickEditBtn="clickEditNode"
+        :clickNode="clickNode"
+        :drag="saveDrag"
+        :clickDeleteBtn="deleteNode"/>
     </card>
   </div>
 </template>
 
 <script>
 import {showModal} from '_c/_comps/modals'
-// import UserEditModal from './userEditModal'
-import * as consts from './index'
+import MenuEditModal from './menuEditModal'
 import * as util from '@/libs/util'
 
 export default {
   data () {
     return {
-      consts,
-      form: {},
-      table: {
-        uri: '/api/user/list',
-        params: this.form,
-        defaultWidth: 150,
-        columns: [
-          {
-            title: 'ID',
-            key: 'id',
-            fixed: 'left',
-            width: 60
-          },
-          {
-            title: '昵称',
-            key: 'nickName',
-            width: 150
-          },
-          {
-            title: '手机号',
-            key: 'telephone'
-          }, {
-            title: '邮箱',
-            key: 'email',
-            width: 200
-          }, {
-            title: '性别',
-            mapper: consts.sexMapper,
-            key: 'sex'
-          }, {
-            title: '创建时间',
-            key: 'createTime',
-            sortable: 'custom'
-          }, {
-            title: '更新时间',
-            key: 'updateTime',
-            sortable: 'custom'
-          }, {
-            title: '用户状态',
-            mapper: consts.userStatusMapper,
-            key: 'status',
-            fixed: 'right',
-            renderComp: {
-              type: 'switch',
-              slotTitle: ['有效', '无效'],
-              size: 'large',
-              click: this.clickSwith
-            }
-          }, {
-            title: '操作',
-            fixed: 'right',
-            width: 200,
-            renderButtons: row => [{
-              title: '编辑',
-              type: 'primary',
-              click: this.clickEdit
-            }, {
-              title: '删除',
-              type: 'error',
-              click: this.clickDelete
-            }]
-          }]
+      appsId: '',
+      appMapper: [],
+      treeData: [],
+      // 以下setting如果填写会覆盖默认的setting，请参考ztree官方文档选择性覆盖
+      // 以下setting如果填写会覆盖默认的setting，请参考ztree官方文档选择性覆盖
+      setting: {
+        showEdit: true, // 是否显示增删改按钮，默认不显示
+        data: {
+          simpleData: {
+            enable: true,
+            pIdKey: 'pid' // 指定父id的字段key，默认为pId
+          }
+        }
       }
     }
   },
+  async mounted () {
+    let r = await util.request('/api/apps/list')
+    let mapper = {}
+    r && r.data && r.data.forEach(a => mapper[a.id] = `${a.appName}(${a.appNameEn})`)
+    this.appMapper = mapper
+    this.appsId = +Object.keys(mapper)[0]
+    // 载入ztree
+    await this.loadTree()
+  },
   methods: {
-    async clickEdit (row = {}) {
-      // let r = await showModal(UserEditModal, {data: row}, {title: row.id ? '编辑用户' : '新增用户', width: 25})
-      // if (r) {
-      //   await this.$refs.table.reload()
-      // }
+    // 点击添加节点按钮（若希望新增节点生效，需要return新增的节点数据）
+    async clickAddNode (pNode) {
+      let r = await showModal(MenuEditModal, { data: {pid: pNode.id, appsId: this.appsId, appName: this.appMapper[this.appsId]} }, {title: '新增节点', width: 23})
+      return r // 若保存数据库失败，则不需要返回新增节点数据，这样树组件将不会动态加载新增节点数据
     },
-    async clickSwith (row = {}, isOpen) {
-      await util.request('/api/user/update', {data: {id: row.id, status: isOpen}})
+    // 点击修改节点按钮（若希望修改节点生效，需要return修改后的节点数据）
+    async clickEditNode (node) {
+      let r = await showModal(MenuEditModal, { data: {id: node.id, name: node.title, url: node.url, appsId: this.appsId, appName: this.appMapper[this.appsId]} }, {title: '修改节点', width: 23})
+      return r
     },
-    async queryCondition () {
-      await this.$refs.table.reload()
+    // 保存拖拽结果（若希望拖拽结果生效，需要return true）
+    async saveDrag (node, targetNode, moveType, nodeIds) {
+      await util.request('/api/access/accessMove', {data: {index: node.getIndex(), targetIndex: targetNode.getIndex(), nodeIds}})
+      return true
     },
-    async reset () {
-      this.form = {}
-      await this.$nextTick()
-      this.$refs.table.reload()
+    // 点击节点
+    async clickNode (node) {
+      console.log('点击节点：', node)
+    },
+    // 删除节点（若希望删除结果生效，需要return true）
+    async deleteNode (node) {
+      await util.request('/api/access/delete', {data: {id: node.id}})
+      return true
+    },
+    async appChange (value) {
+    },
+    async loadTree () {
+      let r = await util.request('/api/access/list', {appsId: this.appsId})
+      this.treeData = [...r.data, {id: 0, name: this.appMapper[this.appsId]}]
     }
   }
 }
 </script>
 
 <style>
-.intro-con{
-  min-height: 140px;
-}
-.draggable-btn{
-  margin-top: 20px;
-}
-.code-con{
-  width: 400px;
-  background: #F9F9F9;
-  padding-top: 10px;
-}
+  .intro-con{
+    min-height: 140px;
+  }
+  .draggable-btn{
+    margin-top: 20px;
+  }
+  .code-con{
+    width: 400px;
+    background: #F9F9F9;
+    padding-top: 10px;
+  }
 </style>
