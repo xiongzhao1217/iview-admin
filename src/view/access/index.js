@@ -2,7 +2,7 @@ export default [{
   path: 'roles',
   name: 'roles',
   meta: {
-    icon: 'md-add',
+    icon: 'ios-man',
     title: '角色管理'
   },
   component: () => import('@/view/access/roles.vue')
@@ -10,8 +10,16 @@ export default [{
   path: 'menus',
   name: 'menus',
   meta: {
-    icon: 'md-download',
+    icon: 'md-menu',
     title: '菜单管理'
+  },
+  component: () => import('@/view/access/menus.vue')
+}, {
+  path: 'access',
+  name: 'access',
+  meta: {
+    icon: 'ios-key',
+    title: '权限管理'
   },
   component: () => import('@/view/access/menus.vue')
 }]

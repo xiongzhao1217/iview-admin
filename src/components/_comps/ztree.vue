@@ -53,7 +53,6 @@ export default {
           btn.bind('click', async () => {
             if (this.clickAddBtn) {
               let sonNode = await this.clickAddBtn(treeNode)
-              console.log('sonNode:', sonNode)
               // 保存添加按钮
               if (sonNode) {
                 zTree.addNodes(treeNode, sonNode)
@@ -146,6 +145,9 @@ export default {
           if (updateNode) {
             treeNode.name = updateNode.name
             if (zTree.setting && zTree.setting.data && zTree.setting.data.key && zTree.setting.data.key.name) treeNode[zTree.setting.data.key.name] = updateNode[zTree.setting.data.key.name]
+            for (let key of Object.keys(updateNode)) {
+              treeNode[key] = updateNode[key]
+            }
             zTree.updateNode(treeNode)
             this.$Message.success('修改完成')
           }
@@ -178,7 +180,8 @@ export default {
       let clickNode = (treeId, treeNode) => {
         this.clickNode && this.clickNode(treeNode)
       }
-
+      if (this.zTree && this.zTree.destroy) this.zTree.destroy()
+      // 初始化zTree
       window.$.fn.zTree.init(
         window.$('#ztree'),
         {
@@ -197,7 +200,7 @@ export default {
             enable: this.setting && this.setting.showEdit,
             editNameSelectAll: true,
             showRemoveBtn: showRemoveBtn,
-            showRenameBtn: true
+            showRenameBtn: this.setting && this.setting.edit && this.setting.edit.showRenameBtn
           },
           data: {
             key: this.setting && this.setting.data && this.setting.data.key || {},

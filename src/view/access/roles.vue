@@ -23,6 +23,8 @@
 <script>
 import {showModal} from '_c/_comps/modals'
 import RoleEditModal from './roleEditModal'
+import RoleMenuEditModal from './roleMenuEditModal'
+import RoleUserEditModal from './roleUserEditModal'
 import * as util from '@/libs/util'
 
 export default {
@@ -66,6 +68,18 @@ export default {
               type: 'error',
               click: this.clickDelete
             }]
+          }, {
+            title: '高级操作',
+            width: 220,
+            renderButtons: row => [{
+              title: '关联用户',
+              type: 'info',
+              click: this.bindUser
+            }, {
+              title: '关联菜单',
+              type: 'success',
+              click: this.bindMenu
+            }]
           }]
       }
     }
@@ -91,6 +105,12 @@ export default {
     async clickDelete (row = {}) {
       await util.request('/api/role/delete', {data: {id: row.id}})
       await this.$refs.table.reload()
+    },
+    async bindUser (row = {}) {
+      await showModal(RoleUserEditModal, {roleId: row.id}, {title: '关联用户', width: 70})
+    },
+    async bindMenu (row = {}) {
+      await showModal(RoleMenuEditModal, {appsId: this.params.appsId, roleId: row.id}, {title: '关联菜单', width: 30})
     }
   }
 }

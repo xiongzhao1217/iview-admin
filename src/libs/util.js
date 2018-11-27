@@ -53,6 +53,63 @@ export const getMenuByRouter = (list, access) => {
 }
 
 /**
+ * @param {Array} list 通过后端获取的用户菜单列表获取菜单列表
+ * @returns {Array}
+ */
+export const getMenuByMenuList = (list) => {
+  let menus = list.filter(item => item.type === 1)
+    .map(item => ({
+      id: item.id,
+      pid: item.pid,
+      path: item.url,
+      icon: item.menuIcon || '',
+      name: item.name,
+      meta: item.url.startsWith('http') ? {
+        showAlways: true,
+        title: item.name,
+        href: item.url
+      } : {
+        showAlways: true,
+        title: item.name
+      }
+    }))
+  return buildTree(menus)
+}
+
+/**
+ * 使用递归方法建树
+ * add by xiongzhao
+ * @param treeNodes
+ */
+export function buildTree (treeNodes) {
+  let trees = []
+  for (let treeNode of treeNodes) {
+    if (treeNode.pid === 0) {
+      trees.push(findChildren(treeNode, treeNodes))
+    }
+  }
+  return trees
+}
+
+/**
+ * 递归获取目标节点的子节点数据
+ * add by xiongzhao
+ * @param treeNode 目标节点
+ * @param treeNodes 整个树的list数据
+ */
+export function findChildren (treeNode, treeNodes) {
+  for (let it of treeNodes) {
+    if (treeNode.id === it.pid) {
+      if (!treeNode.children) {
+        treeNode.children = []
+      }
+      treeNode.children.push(findChildren(it, treeNodes))
+    }
+  }
+  return treeNode
+}
+
+/**
  * @param {Array} routeMetched 当前路由metched
  * @returns {Array}
  */
@@ -380,20 +437,20 @@ export const requestJson = (url, opt) => {
       opt.headers = {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
+      opt.transformRequest = [function (data) {
+        // Do whatever you want to transform the data
+        if (data != null) {
+          Object.keys(data).forEach((key) => {
+            let val = data[key]
+            if (val instanceof Date) {
+              data[key] = val.format()
+            }
+          })
+        }
+        let postData = qs.stringify(data)
+        return postData
+      }]
     }
-    opt.transformRequest = [function (data) {
-      // Do whatever you want to transform the data
-      if (data != null) {
-        Object.keys(data).forEach((key) => {
-          let val = data[key]
-          if (val instanceof Date) {
-            data[key] = val.format()
-          }
-        })
-      }
-      let postData = qs.stringify(data)
-      return postData
-    }]
   }
   return axios(url, opt).then(r => {
     let data = r.data

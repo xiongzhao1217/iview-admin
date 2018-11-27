@@ -14,7 +14,7 @@ export const login = ({ userName, password }) => {
 }
 
 export const getUserInfo = () => {
-  return util.request('/api/user/getUserInfo')
+  return util.request('/api/user/getUserInfo?appsId=1')
 }
 
 export const logout = (token) => {

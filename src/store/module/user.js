@@ -8,6 +8,7 @@ export default {
     avatorImgPath: '',
     token: getToken(),
     access: '',
+    menuList: [],
     hasGetInfo: false
   },
   mutations: {
@@ -22,6 +23,9 @@ export default {
     },
     setAccess (state, access) {
       state.access = access
+    },
+    setMenuList (state, menuList) {
+      state.menuList = menuList
     },
     setToken (state, token) {
       state.token = token
@@ -74,6 +78,7 @@ export default {
             commit('setUserName', data.nickName)
             commit('setUserId', data.id)
             commit('setAccess', data.access || [])
+            commit('setMenuList', data.menuList || [])
             commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {

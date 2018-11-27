@@ -15,7 +15,7 @@ export default [
     path: '/user',
     name: 'user',
     meta: {
-      icon: 'ios-stats',
+      icon: 'md-person',
       title: '用户管理'
     },
     component: Main,
@@ -25,7 +25,7 @@ export default [
     path: '/access',
     name: 'access',
     meta: {
-      icon: 'ios-stats',
+      icon: 'md-lock',
       title: '权限控制'
     },
     component: Main,

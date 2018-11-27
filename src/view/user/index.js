@@ -2,7 +2,7 @@ export default [{
   path: 'users',
   name: 'users',
   meta: {
-    icon: 'md-add',
+    icon: 'md-person',
     title: '用户管理'
   },
   component: () => import('@/view/user/users.vue')
@@ -10,13 +10,13 @@ export default [{
   path: 'optLog',
   name: 'opt_log',
   meta: {
-    icon: 'md-download',
+    icon: 'ios-folder',
     title: '操作日志'
   },
   component: () => import('@/view/user/users.vue')
 }]
 
-// 应用状态
+// 用户状态
 export let userStatusMapper = {0: '无效', 1: '有效'}
 
 // 性别

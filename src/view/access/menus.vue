@@ -36,13 +36,18 @@ export default {
       appMapper: [],
       treeData: [],
       // 以下setting如果填写会覆盖默认的setting，请参考ztree官方文档选择性覆盖
-      // 以下setting如果填写会覆盖默认的setting，请参考ztree官方文档选择性覆盖
       setting: {
         showEdit: true, // 是否显示增删改按钮，默认不显示
         data: {
           simpleData: {
             enable: true,
             pIdKey: 'pid' // 指定父id的字段key，默认为pId
+          }
+        },
+        edit: {
+          showRenameBtn: (treeId, treeNode) => {
+            let b = treeNode.level !== 0
+            return b
           }
         }
       }
@@ -65,7 +70,7 @@ export default {
     },
     // 点击修改节点按钮（若希望修改节点生效，需要return修改后的节点数据）
     async clickEditNode (node) {
-      let r = await showModal(MenuEditModal, { data: {id: node.id, name: node.title, url: node.url, appsId: this.appsId, appName: this.appMapper[this.appsId]} }, {title: '修改节点', width: 23})
+      let r = await showModal(MenuEditModal, { data: {...node, appsId: this.appsId, appName: this.appMapper[this.appsId]} }, {title: '修改节点', width: 23})
       return r
     },
     // 保存拖拽结果（若希望拖拽结果生效，需要return true）
@@ -79,13 +84,13 @@ export default {
     },
     // 删除节点（若希望删除结果生效，需要return true）
     async deleteNode (node) {
-      await util.request('/api/access/delete', {data: {id: node.id}})
+      await util.request('/api/menu/delete', {data: {id: node.id}})
       return true
     },
     async appChange (value) {
     },
     async loadTree () {
-      let r = await util.request('/api/access/list', {appsId: this.appsId})
+      let r = await util.request('/api/menu/list', {appsId: this.appsId})
       this.treeData = [...r.data, {id: 0, name: this.appMapper[this.appsId]}]
     }
   }

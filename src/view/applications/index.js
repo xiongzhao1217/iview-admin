@@ -2,7 +2,7 @@ export default [{
   path: 'apps',
   name: '应用管理',
   meta: {
-    icon: 'ios-navigate',
+    icon: 'ios-apps',
     title: '应用管理'
   },
   component: () => import('@/view/applications/apps.vue')

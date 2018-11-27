@@ -104,6 +104,7 @@ export default {
       'handleLogin'
     ]),
     turnToPage (route) {
+      debugger
       let { name, params, query } = {}
       if (typeof route === 'string') name = route
       else {
@@ -115,11 +116,12 @@ export default {
         window.open(name.split('_')[1])
         return
       }
-      this.$router.push({
-        name,
-        params,
-        query
-      })
+      // this.$router.push({
+      //   name,
+      //   params,
+      //   query
+      // })
+      this.$router.push('/access/roles')
     },
     handleCollapsedChange (state) {
       this.collapsed = state
