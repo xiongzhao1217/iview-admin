@@ -1,10 +1,8 @@
-import container from '@/components/main/container.vue'
 import Main from '@/components/main'
-// import busioppoRouters from '@/view/busioppo'
 export default [
   {
-    path: '/applications',
-    name: 'applications',
+    path: '/app',
+    name: 'app',
     meta: {
       hideInBread: true
     },

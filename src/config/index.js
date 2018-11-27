@@ -21,6 +21,10 @@ export default {
    */
   homeName: 'home',
   /**
+   * 应用id，获取登录用户菜单权限必传参数
+   */
+  appsId: 1,
+  /**
    * @description 需要加载的插件
    */
   plugin: {

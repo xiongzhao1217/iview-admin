@@ -1,5 +1,6 @@
 import axios from '@/libs/api.request'
 import * as util from '@/libs/util'
+import config from '../config'
 
 export const login = ({ userName, password }) => {
   const data = {
@@ -14,7 +15,7 @@ export const login = ({ userName, password }) => {
 }
 
 export const getUserInfo = () => {
-  return util.request('/api/user/getUserInfo?appsId=1')
+  return util.request(`/api/user/getUserInfo?appsId=${config.appsId}`)
 }
 
 export const logout = (token) => {

@@ -4,19 +4,19 @@
     <Menu ref="menu" v-show="!collapsed" :active-name="activeName" :open-names="openedNames" :accordion="accordion" :theme="theme" width="auto" @on-select="handleSelect">
       <template v-for="item in menuList">
         <template v-if="item.children && item.children.length === 1">
-          <side-menu-item v-if="showChildren(item)" :key="`menu-${item.name}`" :parent-item="item"></side-menu-item>
-          <menu-item v-else :name="getNameOrHref(item, true)" :key="`menu-${item.children[0].name}`"><common-icon :type="item.children[0].icon || ''"/><span>{{ showTitle(item.children[0]) }}</span></menu-item>
+          <side-menu-item v-if="showChildren(item)" :key="item.path" :parent-item="item"></side-menu-item>
+          <menu-item v-else :name="getNameOrHref(item, true)" :key="item.children[0].path"><common-icon :type="item.children[0].icon || ''"/><span>{{ showTitle(item.children[0]) }}</span></menu-item>
         </template>
         <template v-else>
-          <side-menu-item v-if="showChildren(item)" :key="`menu-${item.name}`" :parent-item="item"></side-menu-item>
-          <menu-item v-else :name="getNameOrHref(item)" :key="`menu-${item.name}`"><common-icon :type="item.icon || ''"/><span>{{ showTitle(item) }}</span></menu-item>
+          <side-menu-item v-if="showChildren(item)" :key="item.path" :parent-item="item"></side-menu-item>
+          <menu-item v-else :name="getNameOrHref(item)" :key="item.path"><common-icon :type="item.icon || ''"/><span>{{ showTitle(item) }}</span></menu-item>
         </template>
       </template>
     </Menu>
     <div class="menu-collapsed" v-show="collapsed" :list="menuList">
       <template v-for="item in menuList">
-        <collapsed-menu v-if="item.children && item.children.length > 1" @on-click="handleSelect" hide-title :root-icon-size="rootIconSize" :icon-size="iconSize" :theme="theme" :parent-item="item" :key="`drop-menu-${item.name}`"></collapsed-menu>
-        <Tooltip transfer v-else :content="showTitle(item.children && item.children[0] ? item.children[0] : item)" placement="right" :key="`drop-menu-${item.name}`">
+        <collapsed-menu v-if="item.children && item.children.length > 1" @on-click="handleSelect" hide-title :root-icon-size="rootIconSize" :icon-size="iconSize" :theme="theme" :parent-item="item" :key="`drop-menu-${item.path}`"></collapsed-menu>
+        <Tooltip transfer v-else :content="showTitle(item.children && item.children[0] ? item.children[0] : item)" placement="right" :key="`drop-menu-${item.path}`">
           <a @click="handleSelect(getNameOrHref(item, true))" class="drop-menu-a" :style="{textAlign: 'center'}"><common-icon :size="rootIconSize" :color="textColor" :type="item.icon || (item.children && item.children[0].icon)"/></a>
         </Tooltip>
       </template>
@@ -78,7 +78,7 @@ export default {
       this.$emit('on-select', name)
     },
     getOpenedNamesByActiveName (name) {
-      return this.$route.matched.map(item => item.name).filter(item => item !== name)
+      return this.$route.matched.filter(item => item.name !== name).map(item => item.path)
     },
     updateOpenName (name) {
       if (name === this.$config.homeName) this.openedNames = []
