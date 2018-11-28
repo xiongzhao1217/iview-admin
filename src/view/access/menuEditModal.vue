@@ -5,7 +5,7 @@
         {{form.appName}}
       </FormItem>
       <FormItem label="权限类型:" prop="type">
-        <AutoSelect v-model="form.type" :mapper="consts.accessTypeMapper" number clearable/>
+        <AutoSelect v-model="form.type" :mapper="consts.accessTypeMapper" number/>
       </FormItem>
       <FormItem label="权限名称:" prop="name">
         <Input v-model="form.name" placeholder="请输入权限名称"></Input>

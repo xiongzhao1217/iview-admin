@@ -46,6 +46,7 @@ export default {
       rm.checked = !!(rm.roleId)
       return rm
     })
+    r.push({id: 0, name: '菜单根节点'})
     this.treeData = r
     this.spinShow = false
   },

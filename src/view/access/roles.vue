@@ -3,7 +3,7 @@
       <Row type="flex" justify="space-between">
         <Col>
             所属应用:
-          <AutoSelect v-model="params.appsId" :mapper="appMapper" @on-change="appChange" number clearable style="width: 200px"/>
+          <AutoSelect v-model="params.appsId" :mapper="appMapper" @on-change="appChange" number style="width: 200px"/>
         </Col>
         <Col>
           <Button type="primary" @click="clickEdit">新增</Button>
@@ -35,6 +35,7 @@ export default {
       table: {
         uri: '/api/role/list',
         params: this.params,
+        defaultWidth: 160,
         columns: [
           {
             title: 'ID',

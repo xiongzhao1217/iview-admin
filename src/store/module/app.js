@@ -1,8 +1,7 @@
 import {
   getBreadCrumbList,
   setTagNavListInLocalstorage,
-  getMenuByRouter,
-  getMenuByMenuList,
+  getMenuTree,
   getTagNavListFromLocalstorage,
   getHomeRoute,
   getNextRoute,
@@ -37,7 +36,7 @@ export default {
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByMenuList(rootState.user.menuList),
+    menuList: (state, getters, rootState) => getMenuTree(rootState.user.menuList),
     errorCount: state => state.errorList.length
   },
   mutations: {

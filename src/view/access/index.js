@@ -26,3 +26,10 @@ export default [{
 
 // 权限类型
 export let accessTypeMapper = {1: '菜单', 2: '按钮'}
+
+// 图标大全
+export let iconMapper = {
+  'ios-add': 'ios-add<Icon type="ios-add"/>',
+  'md-add': 'md-add<Icon type="md-add" />',
+  'ios-add-circle': 'ios-add-circle<Icon type="ios-add-circle" />'
+}

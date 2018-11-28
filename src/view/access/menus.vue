@@ -3,7 +3,7 @@
     <Row type="flex" justify="space-between">
       <Col>
         所属应用:
-        <AutoSelect v-model="appsId" :mapper="appMapper" @on-change="appChange" number clearable style="width: 243px"/>
+        <AutoSelect v-model="appsId" :mapper="appMapper" @on-change="appChange" number style="width: 243px"/>
       </Col>
     </Row>
     <br>
@@ -87,11 +87,13 @@ export default {
       await util.request('/api/menu/delete', {data: {id: node.id}})
       return true
     },
-    async appChange (value) {
+    async appChange () {
+      this.loadTree()
     },
     async loadTree () {
-      let r = await util.request('/api/menu/list', {appsId: this.appsId})
-      this.treeData = [...r.data, {id: 0, name: this.appMapper[this.appsId]}]
+      let r = await util.request('/api/menu/list', {params: {appsId: this.appsId}})
+      r.data.push({id: 0, name: this.appMapper[this.appsId]})
+      this.treeData = r.data
     }
   }
 }

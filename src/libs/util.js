@@ -56,14 +56,13 @@ export const getMenuByRouter = (list, access) => {
  * @param {Array} list 通过后端获取的用户菜单列表获取菜单列表
  * @returns {Array}
  */
-export const getMenuByMenuList = (list) => {
+export const getMenuTree = (list) => {
   let menus = list.filter(item => item.type === 1)
     .map(item => ({
       id: item.id,
       pid: item.pid,
       path: item.url,
       icon: item.menuIcon || '',
-      name: item.name,
       meta: item.url.startsWith('http') ? {
         showAlways: true,
         title: item.name,
@@ -77,7 +76,7 @@ export const getMenuByMenuList = (list) => {
 }
 
 /**
- * 使用递归方法建树
+ * 递归建树
  * add by xiongzhao
  * @param treeNodes
  */

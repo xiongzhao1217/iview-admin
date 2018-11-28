@@ -38,7 +38,6 @@ export default {
       return this.zTree
     },
     loadZtree () {
-      console.log('data:', this.data)
       // 鼠标悬停显示内容
       let addHoverDom = (treeId, treeNode) => {
         if (this.setting && this.setting.maxLevel && this.setting.maxLevel <= treeNode.level) {
@@ -134,7 +133,7 @@ export default {
       }
       // 是否显示删除按钮
       let showRemoveBtn = (treeId, treeNode) => {
-        return !treeNode.isParent // 父节点不显示删除按钮
+        return !treeNode.isParent && treeNode.getParentNode() // 父节点不显示删除按钮,根节点不可删除
       }
 
       // 进入编辑状态前调用

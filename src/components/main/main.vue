@@ -104,23 +104,23 @@ export default {
       'handleLogin'
     ]),
     turnToPage (route) {
-      let { name, params, query } = {}
-      if (typeof route === 'string') name = route
-      else {
+      let { name, turnTo } = {}
+      if (typeof route === 'string') {
+        name = route
+        turnTo = route
+      } else {
         name = route.name
-        params = route.params
-        query = route.query
+        turnTo = {
+          name,
+          params: route.params,
+          query: route.query
+        }
       }
       if (name.indexOf('isTurnByHref_') > -1) {
         window.open(name.split('_')[1])
         return
       }
-      // this.$router.push({
-      //   name,
-      //   params,
-      //   query
-      // })
-      this.$router.push(name)
+      this.$router.push(turnTo)
     },
     handleCollapsedChange (state) {
       this.collapsed = state

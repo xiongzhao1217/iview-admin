@@ -7,8 +7,8 @@ export default [{
   },
   component: () => import('@/view/user/users.vue')
 }, {
-  path: 'optLog',
-  name: 'opt_log',
+  path: 'optlog',
+  name: 'optlog',
   meta: {
     icon: 'ios-folder',
     title: '操作日志'
