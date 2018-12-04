@@ -27,17 +27,18 @@ router.beforeEach((to, from, next) => {
   if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 未登录且要跳转的页面不是登录页,跳转到登录页
     window.location.href = `${loginUrl}?returnUrl=${encodeURIComponent(window.location.href)}`
-  } else if (!token && to.name === LOGIN_PAGE_NAME) {
+  } else if (to.name === LOGIN_PAGE_NAME) {
     // 未登陆且要跳转的页面是登录页
     next() // 跳转
-  } else if (token && to.name === LOGIN_PAGE_NAME) {
-    // 已登录且要跳转的页面是登录页
-    next({
-      name: homeName // 跳转到homeName页
-    })
-  }
-  if (!token) {
   } else {
+  // else if (token && to.name === LOGIN_PAGE_NAME) {
+  //   // 已登录且要跳转的页面是登录页
+  //   next({
+  //     name: homeName // 跳转到homeName页
+  //   })
+  // }
+  // if (!token) {
+  // } else {
     if (store.state.user.hasGetInfo) {
       turnTo(to, store.state.user.access, next)
     } else {
@@ -45,9 +46,7 @@ router.beforeEach((to, from, next) => {
         // 拉取用户信息，通过用户权限和跳转的页面的name来判断是否有权限访问;access必须是一个数组，如：['super_admin'] ['super_admin', 'admin']
         turnTo(to, user.access, next)
       }).catch(() => {
-        next({
-          name: 'login?' + encodeURIComponent(window.location.href)
-        })
+        window.location.href = `${loginUrl}?returnUrl=${encodeURIComponent(window.location.href)}`
       })
     }
   }

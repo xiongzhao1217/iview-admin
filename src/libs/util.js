@@ -453,12 +453,11 @@ export const requestJson = (url, opt) => {
   }
   return axios(url, opt).then(r => {
     let data = r.data
-    if (data.code && !opt.silent) {
+    if (data.code === 301 || data.code === 401) {
+      window.location.href = `${envConfig.loginUrl}?returnUrl=${encodeURIComponent(window.location.href)}`
+    } else if (data.code && !opt.silent) {
       error(data.message)
       return Promise.reject(data)
-    }
-    if (data.code === 301 || data.code === 401) {
-      window.location.href = `${envConfig.loginUrl}?ReturnUrl=${encodeURIComponent(window.location.href)}`
     }
     return data
   }, err => {
@@ -470,7 +469,7 @@ export const requestJson = (url, opt) => {
     } else {
       alertOnce(err.response && err.response.data)
       error('服务器错误')
-      console.error('error fetching:', url, _.omit(opt, 'paramsSerializer'))
+      console.error('error request:', url, _.omit(opt, 'paramsSerializer'))
       console.error('error:', err.response.data)
     }
     return Promise.reject(err)

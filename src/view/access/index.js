@@ -16,12 +16,12 @@ export default [{
   component: () => import('@/view/access/menus.vue')
 }, {
   path: 'access',
-  name: 'access',
+  name: 'accesses',
   meta: {
     icon: 'ios-key',
     title: '权限管理'
   },
-  component: () => import('@/view/access/menus.vue')
+  component: () => import('@/view/access/access.vue')
 }]
 
 // 权限类型
