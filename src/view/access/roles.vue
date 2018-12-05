@@ -24,6 +24,7 @@
 import {showModal} from '_c/_comps/modals'
 import RoleEditModal from './roleEditModal'
 import RoleMenuEditModal from './roleMenuEditModal'
+import RoleAccessEditModal from './roleAccessEditModal'
 import RoleUserEditModal from './roleUserEditModal'
 import * as util from '@/libs/util'
 
@@ -59,7 +60,8 @@ export default {
             sortable: 'custom'
           }, {
             title: '操作',
-            width: 200,
+            width: 170,
+            fixed: 'right',
             renderButtons: row => [{
               title: '编辑',
               type: 'primary',
@@ -71,7 +73,8 @@ export default {
             }]
           }, {
             title: '高级操作',
-            width: 220,
+            width: 300,
+            fixed: 'right',
             renderButtons: row => [{
               title: '关联用户',
               type: 'info',
@@ -80,6 +83,10 @@ export default {
               title: '关联菜单',
               type: 'success',
               click: this.bindMenu
+            }, {
+              title: '关联权限',
+              type: 'primary',
+              click: this.bindAccess
             }]
           }]
       }
@@ -112,6 +119,9 @@ export default {
     },
     async bindMenu (row = {}) {
       await showModal(RoleMenuEditModal, {appsId: this.params.appsId, roleId: row.id}, {title: '关联菜单', width: 30})
+    },
+    async bindAccess (row = {}) {
+      await showModal(RoleAccessEditModal, {appsId: this.params.appsId, roleId: row.id}, {title: '关联权限资源', width: 30})
     }
   }
 }
