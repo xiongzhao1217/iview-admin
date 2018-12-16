@@ -44,10 +44,6 @@ export default {
       if (!valid) {
         return this.$Message.error('表单验证失败')
       }
-      if (this.form.type !== 1) {
-        this.form.url = null
-        this.form.menuIcon = null
-      }
       let url = this.form.id && '/api/access/update' || '/api/access/add'
       let r = await utils.request(url, {data: this.form})
       close(r.data)

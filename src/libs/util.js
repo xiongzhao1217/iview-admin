@@ -453,7 +453,7 @@ export const requestJson = (url, opt) => {
   }
   return axios(url, opt).then(r => {
     let data = r.data
-    if (data.code === 301 || data.code === 401) {
+    if (data.code === 401) {
       window.location.href = `${envConfig.loginUrl}?returnUrl=${encodeURIComponent(window.location.href)}`
     } else if (data.code && !opt.silent) {
       error(data.message)
